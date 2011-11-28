@@ -3,7 +3,6 @@
 #include <string>
 #include <string.h>
 #include <sstream>
-#include <mysql/mysql.h>
 #include "general.h"
 
 using namespace std;
