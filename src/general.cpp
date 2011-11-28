@@ -39,7 +39,7 @@ string general::charlength(string str) {
 string general::escape(const char *pStr) {
     string result;
     while (*pStr) {
-        if (strchr("\"'\r\n\t",*pStr)) {
+        if (strchr("\"\r\n\t",*pStr)) {
         } else {
             result.push_back(*pStr);
         }
