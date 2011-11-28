@@ -1,0 +1,351 @@
+quest koenigswahl begin
+	state start begin
+		when 20095.chat."Info: Königswahl" begin
+			say_title("Botschafter:")
+			say("")
+			say("Als König regierst du alleine")
+			say("über dein Reich und führst")
+			say("Kriege an.")
+			say("Du wirst eine besondere Rüstung")
+			say("tragen, damit man dich als König")
+			say("erkennen kann.")
+			say("")
+			wait()
+			say_title("Botschafter:")
+			say("")
+			say("Als König kannst du Ankündigungen")
+			say("in deinem Reich schreiben und")
+			say("und Kriege anführen.")
+			say("Vorraussetzungen:")
+			say("-mindestens Level 70")
+			say("-10x 500KKGoldbarren")
+			say("")
+		end
+		
+		when 20095.chat."Wer ist wo König?" begin
+			local rot = who_is_king(1)
+			local gelb = who_is_king(2)
+			local blau = who_is_king(3)
+			
+			say_title("Botschafter:")
+			say("")
+			say("Rotes Reich:  "..rot)
+			say("Gelbes Reich: "..gelb)
+			say("Blaues Reich: "..blau)
+		end
+		
+		when 20095.chat."Als König kandidieren" with game.get_event_flag("koenigswahl_"..pc.get_empire()) == 1 and is_king() == false and koenigswahl_count_candidates() < 6 and koenigswahl_has_candidated() == false begin
+			say_title("Botschafter:")
+			say("")
+			say("Seid gegrüßt "..pc.get_name()..",")
+			say("Ihr habt die Möglichkeit als König")
+			say("über Euer gesamtes Reich zu regieren.")
+			say("Spielt Herrscher und führt Euer")
+			say("Reich im Krieg gegen die anderen")
+			say("Reiche an.")
+			say("")
+			wait()
+			say_title("Botschafter:")
+			say("")
+			say("Da dies eine Demokratie ist, müsst")
+			say("Ihr gewählt werden. Um Euch für die")
+			say("Wahl aufstellen zu lassen, müsst")
+			say("Ihr mindestens Level 100 sein und")
+			say("10x 500KKGoldbarren besitzen.")
+			say("")
+			say_reward("Möchtet Ihr euch aufstellen lassen?")
+			say("")
+			local antwort = select("Ja", "Nein")
+			
+			if antwort == 1 then
+				if pc.get_level() < 100 then
+					say_title("Botschafter:")
+					say("")
+					say("Mit Level "..pc.get_level().." habt Ihr noch")
+					say("ein zu niedriges Level.")
+					say("")
+				elseif pc.count_item("8338999") < 10 then
+					say_title("Botschafter:")
+					say("")
+					say("Ihr habt zu wenig Goldbarren")
+					say("um Euch für die Wahl aufstellen")
+					say("zu lassen.")
+					say("")
+				elseif koenigswahl_count_candidates() >= 6 then
+					say_title("Botschafter:")
+					say("")
+					say("Es haben sich schon 6 andere")
+					say("Spieler für die Wahl aufstellen")
+					say("lassen. Probiert es doch beim")
+					say("nächsten Mal.")
+					say("")
+				elseif koenigswahl_has_candidated() == true then
+					say_title("Botschafter:")
+					say("")
+					say("Ihr habt euch bereits zur Wahl")
+					say("aufstellen lassen.")
+					say("")
+				else
+					koenigswahl_add_candidate()
+					pc.remove_item("8338999", 10)
+					say_title("Botschafter:")
+					say("")
+					say("Ich habe Euch zur Wahl aufstellen")
+					say("lassen, habt nun ein wenig Geduld")
+					say("bis ihr gewählt werdet. Ich wünsche")
+					say("Euch viel Glück.")
+					say("")
+				end
+			else
+				say_title("Botschafter:")
+				say("")
+				say("Ihr möchtest also nicht zur Wahl auf-")
+				say("gestellt werden? Vielleicht ja ein")
+				say("anderes Mal.")
+				say("")
+				say_reward("Auf Wiedersehen")
+				say("")
+			end
+		end
+		when 20095.chat."König wählen" with game.get_event_flag("koenigswahl_"..pc.get_empire()) == 1 and koenigswahl_count_candidates() >= 6 begin
+			say_title("Botschafter:")
+			say("")
+			say("Guten Tag "..pc.get_name()..",")
+			say("In dem nächsten Fenster könnt")
+			say("Ihr einen König wählen, aber")
+			say("wählt mit bedacht, denn dieser")
+			say("König regiert bis zur nächsten")
+			say("Wahl.")
+			say("")
+			wait()
+			
+			local candidates = koenigswahl_get_candidates()
+			say_title("Botschafter:")
+			say("")
+			local vote = select_table(candidates)
+			
+			if pc.get_playtime() < 1440 then
+				say_title("Botschafter:")
+				say("")
+				say("Ihr müsst mindestens 24 Stunden")
+				say("online gewesen sein.")
+				say("Bisher: "..pc.get_playtime().." Minuten online.")
+				say("")
+			elseif pc.get_level() < 50 then
+				say_title("Botschafter:")
+				say("")
+				say("Ihr müsst mindestens Level 50 sein.")
+				say("")
+			elseif candidates[vote] == pc.get_name() then
+				say_title("Botschafter:")
+				say("")
+				say("Ihr könnt Euch nicht selbst wählen.")
+				say("")
+			elseif koenigswahl_check_voted(pc.get_name()) == true then
+				say_title("Botschafter:")
+				say("")
+				say("Ihr habt schon abgestimmt.")
+				say("")
+			else
+				koenigswahl_vote_for_player(candidates[vote])
+				say_title("Botschafter:")
+				say("")
+				say("Ihr habt für "..candidates[vote].." gevotet.")
+				say("")
+			end
+		end
+		
+		when 20095.chat."GM: Königswahl starten" with pc.is_gm() begin
+			say_title("Botschafter:")
+			say("")
+			say("Möchtet Ihr die Köngiswahl starten?")
+			say("")
+			local antwort = select("Ja", "Nein")
+			
+			if antwort == 1 then				
+				say_title("Botschafter:")
+				say("")
+				say("Wo möchtet ihr die Königswahl starten?")
+				say("")
+				local ans = select("In allen Reichen", "Rotes Reich", "Gelbes Reich", "Blaues Reich", "Abbrechen")
+				
+				if ans == 1 then
+					koenigswahl_startwahl_global()
+					notice_all("Königswahl: Die Wahl an allen Reichen wurde gestartet.")
+					notice_all("Für mehr Infos geht zum Hauptmann.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde in allen")
+					say_reward("Reichen gestartet.")
+					say("")
+				elseif ans == 2 then
+					koenigswahl_startwahl(1)
+					notice_all("Königswahl: Die Wahl im Roten Reich wurde gestartet.")
+					notice_all("Für mehr Infos geht zum Hauptmann.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Roten")
+					say_reward("Reich gestartet.")
+					say("")
+				elseif ans == 3 then
+					koenigswahl_startwahl(2)
+					notice_all("Königswahl: Die Wahl im Gelben Reich wurde gestartet.")
+					notice_all("Für mehr Infos geht zum Hauptmann.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Gelben")
+					say_reward("Reich gestartet.")
+					say("")
+				elseif ans == 4 then
+					koenigswahl_startwahl(3)
+					notice_all("Königswahl: Die Wahl im Blauen Reich wurde gestartet.")
+					notice_all("Für mehr Infos geht zum Hauptmann.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Blauen")
+					say_reward("Reich gestartet.")
+					say("")
+				else
+					say_title("Botschafter:")
+					say("")
+					say("Keine Aktion ausgeführt.")
+					say("")
+				end
+			else
+				say_title("Botschafter:")
+				say("")
+				say("Ihr habt die Königswahl nicht")
+				say("gestartet.")
+				say("")
+			end
+		end
+		
+		when 20095.chat."GM: Königswahl beenden" with pc.is_gm() begin
+			say_title("Botschafter:")
+			say("")
+			say("Möchtest du die Königswahl")
+			say("wirklich beenden?")
+			say("")
+			local antwort = select("Ja", "Nein")
+			
+			if antwort == 1 then				
+				say_title("Botschafter:")
+				say("")
+				say("Wo möchtet ihr die Königswahl beenden?")
+				say("")
+				local ans = select("In allen Reichen", "Rotes Reich", "Gelbes Reich", "Blaues Reich", "Abbrechen")
+				
+				if ans == 1 then
+					koenigswahl_stop_global()
+					notice_all("Königswahl: Die Wahl an allen Reichen wurde beendet.")
+					notice_all("Der König im Roten Reich ist von nun an "..who_is_king(1))
+					notice_all("Der König im Gelben Reich ist von nun an "..who_is_king(2))
+					notice_all("Der König im Blauen Reich ist von nun an "..who_is_king(3))
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde in allen")
+					say_reward("Reichen beendet.")
+					say("")
+				elseif ans == 2 then
+					koenigswahl_stop(1)
+					notice_all("Königswahl: Die Wahl im Roten Reich wurde beendet.")
+					notice_all("Der König im Roten Reich ist von nun an "..who_is_king(1))
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Roten")
+					say_reward("Reich beendet.")
+					say("")
+				elseif ans == 3 then
+					koenigswahl_stop(2)
+					notice_all("Königswahl: Die Wahl im Gelben Reich wurde beendet.")
+					notice_all("Der König im Gelben Reich ist von nun an "..who_is_king(2))
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Gelben")
+					say_reward("Reich beendet.")
+					say("")
+				elseif ans == 4 then
+					koenigswahl_stop(3)
+					notice_all("Königswahl: Die Wahl im Blauen Reich wurde beendet.")
+					notice_all("Der König im Blauen Reich ist von nun an "..who_is_king(3))
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Blauen")
+					say_reward("Reich beendet.")
+					say("")
+				else
+					say_title("Botschafter:")
+					say("")
+					say("Keine Aktion ausgeführt.")
+					say("")
+				end
+			else
+				say_title("Botschafter:")
+				say("")
+				say("Königswahl wurde nicht beendet.")
+				say("")
+			end
+		end
+		
+		when 20095.chat."GM: Königswahl abbrechen" with pc.is_gm() begin
+			say_title("Botschafter:")
+			say("")
+			say("Möchtest du die Königswahl")
+			say("wirklich abbrechen?")
+			say("")
+			local antwort = select("Ja", "Nein")
+			
+			if antwort == 1 then
+				say_title("Botschafter:")
+				say("")
+				say("Wo möchtet ihr die Königswahl abbrechen?")
+				say("")
+				local ans = select("In allen Reichen", "Rotes Reich", "Gelbes Reich", "Blaues Reich", "Abbrechen")
+				
+				if ans == 1 then
+					koenigswahl_cancelwahl_global()
+					notice_all("Königswahl: Die Wahl an allen Reichen wurde abgebrochen.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde in allen")
+					say_reward("Reichen abgebrochen.")
+					say("")
+				elseif ans == 2 then
+					koenigswahl_cancelwahl(1)
+					notice_all("Königswahl: Die Wahl im Roten Reich wurde abgebrochen.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Roten")
+					say_reward("Reich abgebrochen.")
+					say("")
+				elseif ans == 3 then
+					koenigswahl_cancelwahl(2)
+					notice_all("Königswahl: Die Wahl im Gelben Reich wurde abgebrochen.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Gelben")
+					say_reward("Reich abgebrochen.")
+					say("")
+				elseif ans == 4 then
+					koenigswahl_cancelwahl(3)
+					notice_all("Königswahl: Die Wahl im Blauen Reich wurde abgebrochen.")
+					say_title("Botschafter:")
+					say("")
+					say_reward("Königswahl wurde im Blauen")
+					say_reward("Reich abgebrochen.")
+					say("")
+				else
+					say_title("Botschafter:")
+					say("")
+					say("Keine Aktion ausgeführt.")
+					say("")
+				end
+			else
+				say_title("Botschafter:")
+				say("")
+				say("Königswahl wurde nicht abgebrochen.")
+				say("")
+			end
+		end
+	end
+end
