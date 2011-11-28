@@ -1,14 +1,13 @@
 #include <string>
 #include <mysql/mysql.h>
 #include <vector>
-#include "general.h"
 #include "mysql_noselect.h"
 
 using namespace std;
 
 mysql_noselect::mysql_noselect(MYSQL conn, string query) {
 	this->conn = conn;
-	this->query = this->escape(query.c_str());
+	this->query = query;
 }
 
 string mysql_noselect::execute() {

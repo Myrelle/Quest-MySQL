@@ -3,6 +3,7 @@
 #include <string>
 #include <string.h>
 #include <sstream>
+#include <mysql/mysql.h>
 #include "general.h"
 
 using namespace std;
@@ -34,16 +35,4 @@ string general::charlength(string str) {
         str = "0" + str;
     
     return str;
-}
-
-string general::escape(const char *pStr) {
-    string result;
-    while (*pStr) {
-        if (strchr("\"\r\n\t",*pStr)) {
-        } else {
-            result.push_back(*pStr);
-        }
-        ++pStr;
-    }
-    return result;
 }

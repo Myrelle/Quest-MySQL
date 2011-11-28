@@ -1,14 +1,13 @@
 #include <string>
 #include <mysql/mysql.h>
 #include <vector>
-#include "general.h"
 #include "mysql_select.h"
 
 using namespace std;
 
 mysql_select::mysql_select(MYSQL conn, string query) {
 	this->conn = conn;
-	this->query = this->escape(query.c_str());
+	this->query = query.c_str();
 }
 
 string mysql_select::execute() {
