@@ -33,11 +33,7 @@ string mysql_select::execute() {
 			while ((row = mysql_fetch_row(result))) {
 				nr++;
 				for (int i = 0; i < fields; i++) {
-					if (i == (fields - 1)) {
-						output += (string)row[i];
-					} else {
-						output += (string)row[i] + "^";
-					}
+					output += (string)row[i] + "^";
 				}
 				if (nr != rows) {
 					output += "\n";
