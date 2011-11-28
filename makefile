@@ -8,22 +8,22 @@ $(NAME): help.o mysql_select.o mysql_noselect.o general.o config.o main.o
 	make clean
 	
 main.o: main.cpp
-	$(CC) -c main.cpp
+	$(CC) $(LIBS) -c main.cpp
 	
 config.o: src/config.cpp
-	$(CC) -c -o src/config.o src/config.cpp
+	$(CC) $(LIBS) -c -o src/config.o src/config.cpp
 	
 general.o: src/general.cpp
-	$(CC) -c -o src/general.o src/general.cpp
+	$(CC) $(LIBS) -c -o src/general.o src/general.cpp
 	
 mysql_noselect.o: src/mysql_noselect.cpp
-	$(CC) -c -o src/mysql_noselect.o src/mysql_noselect.cpp
+	$(CC) $(LIBS) -c -o src/mysql_noselect.o src/mysql_noselect.cpp
 	
 mysql_select.o: src/mysql_select.cpp
-	$(CC) -c -o src/mysql_select.o src/mysql_select.cpp
+	$(CC) $(LIBS) -c -o src/mysql_select.o src/mysql_select.cpp
 	
 help.o: src/help.cpp
-	$(CC) -c -o src/help.o src/help.cpp
+	$(CC) $(LIBS) -c -o src/help.o src/help.cpp
 
 .PHONY: clean
 clean:
