@@ -16,37 +16,41 @@ int main(int argc, char** argv) {
 	MYSQL conn;
 	
 	if (argc >= 2) {
-		cnf = new config(argv[1]);
-		cnf->readconfig();
-		
-		mysql_init(&conn);
-		
-		if (!mysql_real_connect(&conn, cnf->db_host.c_str(), cnf->db_user.c_str(), cnf->db_password.c_str(), NULL, cnf->db_port, NULL, 0)) {
-			printf("ERROR^Konnte keine Verbindung zum Server aufbauen: %s\n", mysql_error(&conn));
+		if ((string)argv[1] == "--version") {
+			printf("Quest-MySQL by Hanashi\nVersion 1.0 Beta 2\n");
 		} else {
-			if (argc >= 3) {
-				if (argc >= 4) {
-					if ((string)argv[2] == (string)"1") {
-						mys = new mysql_select(conn, (string)argv[3]);
-						string ret = mys->execute();
-						printf("%s\n", ret.c_str());						
-					} else if ((string)argv[2] == (string)"0") {
-						myns = new mysql_noselect(conn, (string)argv[3]);
-						string ret = myns->execute();
-						printf("%s\n", ret.c_str());
+			cnf = new config(argv[1]);
+			cnf->readconfig();
+			
+			mysql_init(&conn);
+			
+			if (!mysql_real_connect(&conn, cnf->db_host.c_str(), cnf->db_user.c_str(), cnf->db_password.c_str(), NULL, cnf->db_port, NULL, 0)) {
+				printf("ERROR^Konnte keine Verbindung zum Server aufbauen: %s\n", mysql_error(&conn));
+			} else {
+				if (argc >= 3) {
+					if (argc >= 4) {
+						if ((string)argv[2] == (string)"1") {
+							mys = new mysql_select(conn, (string)argv[3]);
+							string ret = mys->execute();
+							printf("%s\n", ret.c_str());						
+						} else if ((string)argv[2] == (string)"0") {
+							myns = new mysql_noselect(conn, (string)argv[3]);
+							string ret = myns->execute();
+							printf("%s\n", ret.c_str());
+						} else {
+							printf("ERROR^False Query-Type\n");
+						}
 					} else {
-						printf("ERROR^False Query-Type\n");
+						printf("ERROR^Query is undefined\n");
 					}
 				} else {
-					printf("ERROR^Query is undefined\n");
+					printf("ERROR^False Query-Type\n");
 				}
-			} else {
-				printf("ERROR^False Query-Type\n");
 			}
+			
+			mysql_close(&conn);
+			delete cnf;
 		}
-		
-		mysql_close(&conn);
-		delete cnf;
 	} else {
 		printf("ERROR^Fehlende Parameter.\n");
 	}
