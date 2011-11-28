@@ -6,6 +6,7 @@
 #include "src/config.h"
 #include "src/mysql_noselect.h"
 #include "src/mysql_select.h"
+#include "src/help.h"
 
 using namespace std;
 
@@ -18,6 +19,10 @@ int main(int argc, char** argv) {
 	if (argc >= 2) {
 		if ((string)argv[1] == "--version") {
 			printf("Quest-MySQL by Hanashi\nVersion 1.0 Beta 2\n");
+		} else if ((string)argv[1] == "--help") {
+			help *h = new help();
+			string he = h->out();
+			printf("%s\n", he.c_str());
 		} else {
 			cnf = new config(argv[1]);
 			cnf->readconfig();

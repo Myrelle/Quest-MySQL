@@ -3,8 +3,8 @@ LIBS = -I/usr/local/include -L/usr/local/lib/mysql
 LINKER = -lmysqlclient
 NAME = quest_mysql
 
-$(NAME): mysql_select.o mysql_noselect.o general.o config.o main.o
-	$(CC) $(LIBS) $(LINKER) -o $(NAME) src/mysql_select.o src/mysql_noselect.o src/general.o src/config.o main.o
+$(NAME): help.o mysql_select.o mysql_noselect.o general.o config.o main.o
+	$(CC) $(LIBS) $(LINKER) -o $(NAME) src/help.o src/mysql_select.o src/mysql_noselect.o src/general.o src/config.o main.o
 	make clean
 	
 main.o: main.cpp
@@ -21,6 +21,9 @@ mysql_noselect.o: src/mysql_noselect.cpp
 	
 mysql_select.o: src/mysql_select.cpp
 	$(CC) -c -o src/mysql_select.o src/mysql_select.cpp
+	
+help.o: src/help.cpp
+	$(CC) -c -o src/help.o src/help.cpp
 
 .PHONY: clean
 clean:
@@ -29,3 +32,4 @@ clean:
 	rm src/general.o
 	rm src/mysql_noselect.o
 	rm src/mysql_select.o
+	rm src/help.o
