@@ -1,0 +1,222 @@
+quest offlinemessage begin
+	state start begin
+		when letter or login with message_count_unread() > 0 begin
+			send_letter("Ungelesene Nachrichten")
+		end
+		when button or info begin
+			say_title("iPhone:")
+			say("")
+			say("Du hast "..message_count_unread().." ungelesene Nachrichten.")
+			say("Schaue dazu auf dein iPhone.")
+			say("")
+		end
+		
+		when 100006.use begin
+			say_title("iPhone:")
+			say("")
+			local auswahl = select("Posteingang", "Postausgang", "Neue Nachricht", "Abbrechen")
+			
+			if auswahl == 1 then
+				message_show_posteingang("1")
+			elseif auswahl == 2 then
+				message_show_postausgang("1")
+			elseif auswahl == 3 then
+				local message = ""
+				
+				say_title("iPhone:")
+				say("")
+				say("An wen soll die Nachricht")
+				say("geschickt werden?")
+				say("")
+				local receiver = input()
+				
+				if receiver == pc.get_name() then
+					say_title("iPhone:")
+					say("")
+					say("Du kannst dir nicht selbst")
+					say("schreiben.")
+					say("")
+				elseif message_check_receiver_is_team(receiver) == true then
+					say_title("iPhone:")
+					say("")
+					say("Du kannst diesen Benutzer")
+					say("keine Nachricht schreiben.")
+					say("")
+				elseif message_check_receiver_exists(receiver) == false then
+					say_title("iPhone:")
+					say("")
+					say("Der Spieler existiert nicht.")
+					say("")
+				else
+					say_title("iPhone:")
+					say("")
+					say("Bitte einen Betreff angeben:")
+					say("")
+					local subject = input()
+					
+					if subject == "" then
+						say_title("iPhone:")
+						say("")
+						say("Der Betreff war leer.")
+						say("")
+					elseif string.len(subject) > 10 then
+						say_title("iPhone:")
+						say("")
+						say("Der Betreff darf nicht länger[ENTER]als 10 Zeichen sein.")
+						say("")
+					elseif string.len(subject) < 2 then
+						say_title("iPhone:")
+						say("")
+						say("Der Betreff darf nicht kürzer[ENTER]als 2 Zeichen sein.")
+						say("")
+					else
+						say_title("iPhone:")
+						say("")
+						say("Erste Zeile:")
+						say("(Zeile leer lassen, zum Abbrechen.)")
+						say("")
+						local line1 = input()
+						
+						if line1 == "" then
+							say_title("iPhone:")
+							say("")
+							say("Aktion abgebrochen.")
+							say("")
+						else
+							message = line1
+							
+							say_title("iPhone:")
+							say("")
+							say("Zweite Zeile:")
+							say("(Zeile leer lassen, zum Abschicken.)")
+							say("")
+							local line2 = input()
+							
+							if line2 == "" then
+								local smsg = message_sendmessage(receiver, subject, message)
+								
+								if smsg == true then
+									say_title("iPhone:")
+									say("")
+									say("Nachricht wurde versandt.")
+									say("")
+								else
+									say_title("iPhone:")
+									say("")
+									say("Nachricht konnte nicht gesendet")
+									say("werden.")
+									say(smsg)
+									say("")
+								end
+							else
+								message = message.."[ENTER]"..line2
+								
+								say_title("iPhone:")
+								say("")
+								say("Dritte Zeile:")
+								say("(Zeile leer lassen, zum Abschicken.)")
+								say("")
+								local line3 = input()
+								
+								if line3 == "" then
+									local smsg = message_sendmessage(receiver, subject, message)
+								
+									if smsg == true then
+										say_title("iPhone:")
+										say("")
+										say("Nachricht wurde versandt.")
+										say("")
+									else
+										say_title("iPhone:")
+										say("")
+										say("Nachricht konnte nicht gesendet")
+										say("werden.")
+										say(smsg)
+										say("")
+									end
+								else
+									message = message.."[ENTER]"..line3
+									
+									say_title("iPhone:")
+									say("")
+									say("Vierte Zeile:")
+									say("(Zeile leer lassen, zum Abschicken.)")
+									say("")
+									local line4 = input()
+									
+									if line4 == "" then
+										local smsg = message_sendmessage(receiver, subject, message)
+								
+										if smsg == true then
+											say_title("iPhone:")
+											say("")
+											say("Nachricht wurde versandt.")
+											say("")
+										else
+											say_title("iPhone:")
+											say("")
+											say("Nachricht konnte nicht gesendet")
+											say("werden.")
+											say(smsg)
+											say("")
+										end
+									else
+										message = message.."[ENTER]"..line4
+										
+										say_title("iPhone:")
+										say("")
+										say("Fünfte Zeile:")
+										say("(Zeile leer lassen, zum Abschicken.)")
+										say("")
+										local line5 = input()
+										
+										if line5 == "" then
+											local smsg = message_sendmessage(receiver, subject, message)
+								
+											if smsg == true then
+												say_title("iPhone:")
+												say("")
+												say("Nachricht wurde versandt.")
+												say("")
+											else
+												say_title("iPhone:")
+												say("")
+												say("Nachricht konnte nicht gesendet")
+												say("werden.")
+												say(smsg)
+												say("")
+											end
+										else
+											message = message.."[ENTER]"..line5
+											
+											local smsg = message_sendmessage(receiver, subject, message)
+								
+											if smsg == true then
+												say_title("iPhone:")
+												say("")
+												say("Nachricht wurde versandt.")
+												say("")
+											else
+												say_title("iPhone:")
+												say("")
+												say("Nachricht konnte nicht gesendet")
+												say("werden.")
+												say(smsg)
+												say("")
+											end
+										end
+									end
+								end
+							end
+						end
+					end
+				end
+			else
+				say_title("iPhone:")
+				say("")
+				say("Keine Aktion ausgeführt.")
+				say("")
+			end
+		end
+	end
+end

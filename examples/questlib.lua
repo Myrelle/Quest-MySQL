@@ -38,7 +38,6 @@ function mysql_query_select(query)
 	for line in io.lines (n) do
 		ret[i] = Split(line, "^")
 		if ret[i][1] == "ERROR" then
-			f:close()
 			return ret[i]
 		end
 		i = i + 1
