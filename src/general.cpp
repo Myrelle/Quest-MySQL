@@ -9,7 +9,7 @@ using namespace std;
 
 vector<string> general::split(string str, string delim) {
     vector<string> splitted;
-    char* part;
+    char* part = new char[400];
     
     part = strtok((char*)str.c_str(), delim.c_str());
     while(part != NULL) {
