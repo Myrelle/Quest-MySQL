@@ -1,6 +1,6 @@
 -- Copyright 2011 Hanashi
 -- All rights reserved.
--- this quest ist untested
+-- this quest is untested
 
 quest adventskalender begin
 	state start begin
