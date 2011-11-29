@@ -20,7 +20,7 @@ int config::readconfig() {
 	ifstream cnf(this->filename.c_str(), ios::in);
     
 	if (!cnf) {
-		printf("ERROR: This file does not exist.\n");
+		fprintf(stderr, "ERROR^The file %s does not exist.\n", this->filename.c_str());
 		exit(1);
 	} else {
 		while (cnf.getline(line, 100)) {
