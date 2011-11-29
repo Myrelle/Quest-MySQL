@@ -23,7 +23,7 @@ mysql_select.o: src/mysql_select.cpp
 	$(CC) $(LIBS) -c -o src/mysql_select.o src/mysql_select.cpp
 	
 help.o: src/help.cpp
-	$(CC) $(LIBS) -c -o src/help.o src/help.cpp
+	$(CC) $(LIBS) -c -o src/help.o src/help.cpp 
 
 .PHONY: clean
 clean:
