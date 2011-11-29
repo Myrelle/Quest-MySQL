@@ -1,5 +1,5 @@
 CREATE TABLE adventskalender (
-  xmasday int,
-  item int(11),
-  count int(11)
+xmasday int,
+item int,
+count int
 );
