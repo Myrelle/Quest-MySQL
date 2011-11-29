@@ -1,6 +1,7 @@
 #include <string>
 #include <mysql/mysql.h>
 #include <vector>
+#include <exception>
 #include "mysql_select.h"
 
 using namespace std;
@@ -22,24 +23,28 @@ string mysql_select::execute() {
 	calls = mysql_query(&this->conn, this->query.c_str());
 	
 	if (calls == 0) {
-		result = mysql_store_result(&this->conn);
-		fields = mysql_num_fields(result);
-		rows = mysql_num_rows(result);
-		
-		if (rows == 0) {
-			return "ERROR^Query-Result is empty";
-		} else {
-			nr = 0;
-			while ((row = mysql_fetch_row(result))) {
-				nr++;
-				for (int i = 0; i < fields; i++) {
-					output += (string)row[i] + "^";
+		try {
+			result = mysql_store_result(&this->conn);
+			fields = mysql_num_fields(result);
+			rows = mysql_num_rows(result);
+			
+			if (rows == 0) {
+				return "ERROR^Query-Result is empty";
+			} else {
+				nr = 0;
+				while ((row = mysql_fetch_row(result))) {
+					nr++;
+					for (int i = 0; i < fields; i++) {
+						output += (string)row[i] + "^";
+					}
+					if (nr != rows) {
+						output += "\n";
+					}
 				}
-				if (nr != rows) {
-					output += "\n";
-				}
+				return output;
 			}
-			return output;
+		} catch (exception& e) {
+			return "ERROR^" + (string)e.what();
 		}
 	} else {
 		return "ERROR^" + (string)mysql_error(&this->conn);
