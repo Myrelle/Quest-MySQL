@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
 			mysql_init(&conn);
 			
 			if (!mysql_real_connect(&conn, cnf->db_host.c_str(), cnf->db_user.c_str(), cnf->db_password.c_str(), NULL, cnf->db_port, NULL, 0)) {
-				printf("ERROR^Konnte keine Verbindung zum Server aufbauen: %s\n", mysql_error(&conn));
+				printf("return {\"ERROR\", \"Konnte keine Verbindung zum Server aufbauen: %s\"}\n", mysql_error(&conn));
 			} else {
 				if (argc >= 3) {
 					if (argc >= 4) {
@@ -43,13 +43,13 @@ int main(int argc, char** argv) {
 							string ret = myns->execute();
 							printf("%s\n", ret.c_str());
 						} else {
-							printf("ERROR^False Query-Type\n");
+							printf("return {\"ERROR\", \"False Query-Type\"}\n");
 						}
 					} else {
-						printf("ERROR^Query is undefined\n");
+						printf("return {\"ERROR\", \"Query is undefined\"}\n");
 					}
 				} else {
-					printf("ERROR^False Query-Type\n");
+					printf("return {\"ERROR\", \"False Query-Type\"}\n");
 				}
 			}
 			
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
 			delete cnf;
 		}
 	} else {
-		printf("ERROR^Fehlende Parameter.\n");
+		printf("return {\"ERROR\", \"Fehlende Parameter.\"}\n");
 	}
 	return 0;
 }

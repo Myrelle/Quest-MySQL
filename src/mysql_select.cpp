@@ -29,24 +29,35 @@ string mysql_select::execute() {
 			rows = mysql_num_rows(result);
 			
 			if (rows == 0) {
-				return "ERROR^Query-Result is empty";
+				return "return {\"ERROR\", \"Query-Result is empty\"}";
 			} else {
 				nr = 0;
+				output = "return {";
 				while ((row = mysql_fetch_row(result))) {
 					nr++;
-					for (int i = 0; i < fields; i++) {
+					/*for (int i = 0; i < fields; i++) {
 						output.append((string)row[i] + "^");
 					}
 					if (nr != rows) {
 						output.append("\n");
+					}*/
+					output.append("{");
+					for (int i = 0; i < fields; i++) {
+						output.append("\"" + (string)row[i] + "\"");
+						if ((i + 1) != fields)
+							output.append(", ");
 					}
+					output.append("}");
+					if (nr != rows)
+						output.append(", ");
 				}
+				output.append("}");
 				return output;
 			}
 		} catch (exception& e) {
-			return "ERROR^" + (string)e.what();
+			return "return {\"ERROR\", \"" + (string)e.what() + "\"}";
 		}
 	} else {
-		return "ERROR^" + (string)mysql_error(&this->conn);
+		return "return {\"ERROR\", \"" + (string)mysql_error(&this->conn) + "\"}";
 	}
 }

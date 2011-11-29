@@ -20,7 +20,7 @@ int config::readconfig() {
 	ifstream cnf(this->filename.c_str(), ios::in);
     
 	if (!cnf) {
-		fprintf(stderr, "ERROR^The file %s does not exist.\n", this->filename.c_str());
+		fprintf(stderr, "return {\"ERROR\", \"The file %s does not exist.\"}\n", this->filename.c_str());
 		exit(1);
 	} else {
 		while (cnf.getline(line, 100)) {
@@ -38,7 +38,7 @@ int config::readconfig() {
 					this->db_port = atoi(splitted[1].c_str());
 				}
 			} catch (exception& e) {
-				fprintf(stderr, "ERROR^%s\n", (char*)e.what());
+				fprintf(stderr, "return {\"ERROR\", \"%s\"}\n", (char*)e.what());
 			}
 		}
     }

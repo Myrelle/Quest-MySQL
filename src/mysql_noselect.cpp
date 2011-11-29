@@ -16,8 +16,8 @@ string mysql_noselect::execute() {
 	calls = mysql_query(&this->conn, this->query.c_str());
 	
 	if (calls == 0) {
-		return "SUCCESS";
+		return "return {\"SUCCESS\"}";
 	} else {
-		return "ERROR^" + (string)mysql_error(&this->conn);
+		return "return {\"ERROR\", \"" + (string)mysql_error(&this->conn) + "\"}";
 	}
 }
