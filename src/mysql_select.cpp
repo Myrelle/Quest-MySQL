@@ -35,10 +35,10 @@ string mysql_select::execute() {
 				while ((row = mysql_fetch_row(result))) {
 					nr++;
 					for (int i = 0; i < fields; i++) {
-						output += (string)row[i] + "^";
+						output.append((string)row[i] + "^");
 					}
 					if (nr != rows) {
-						output += "\n";
+						output.append("\n");
 					}
 				}
 				return output;
