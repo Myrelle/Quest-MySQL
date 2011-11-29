@@ -35,12 +35,6 @@ string mysql_select::execute() {
 				output = "return {";
 				while ((row = mysql_fetch_row(result))) {
 					nr++;
-					/*for (int i = 0; i < fields; i++) {
-						output.append((string)row[i] + "^");
-					}
-					if (nr != rows) {
-						output.append("\n");
-					}*/
 					output.append("{");
 					for (int i = 0; i < fields; i++) {
 						output.append("\"" + (string)row[i] + "\"");
