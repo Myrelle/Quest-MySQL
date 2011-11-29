@@ -1,0 +1,36 @@
+-- Copyright 2011 Hanashi
+-- All rights reserved.
+-- this quest ist untested
+
+quest adventskalender begin
+	state start begin
+		when id.chat."Adventskalender" with game.get_event_flag("adventskalender") == 1 begin
+			say_title("NPC-Name:")
+			say("")
+			say("Hallo "..pc.get_name()..",")
+			say("ich wünsche Euch fröhliche Weihnachten,")
+			say("allerdings ist es noch ein bisschen hin")
+			say("bis Weihnachten. Möchtest du solange den")
+			say("Adventskalender verwenden?")
+			say("")
+			local answer = select("Ja", "Nein")
+			if answer == 1 then
+				local rows = mysql_query_select("SELECT item, xmasday, count FROM adventskalender WHERE xmasday=DAYOFMONTH(NOW()) ORDER BY xmasday DESC LIMIT 1")
+				local day_to_xmas = 24 - tonumber(rows[1][2])
+				say_title("NPC-Name:")
+				say("")
+				say("Es sind noch "..day_to_xmas.." Tage bis Weihnachten,")
+				say("deswegen bekommt ihr von mir eine")
+				say("ganz besondere Überraschung.")
+				say("")
+				say_item(say_item_vnum(tonumber(rows[1][1])), tonumber(rows[1][1]), "Du erhältst "..rows[1][3].."x "..say_item_vnum(tonumber(rows[1][1])))
+				pc.give_item(tonumber(rows[1][1]), tonumber(rows[1][3]))
+			else
+				say_title("NPC-Name:")
+				say("")
+				say("Ok, vielleicht möchtest du es ja später")
+				say("probieren.")
+			end
+		end
+	end
+end
