@@ -37,7 +37,7 @@ int config::readconfig() {
 					} else if (splitted[0] == "DB_PORT") {
 						this->db_port = atoi(splitted[1].c_str());
 					} else if (splitted[0] == "LOGGING_LEVEL") {
-						this->log_level = splitted[1];
+						this->log_level = atoi(splitted[1].c_str());
 					} else if (splitted[0] == "LOG_FILE") {
 						this->log_file = splitted[1];
 					}
