@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 						} else if ((string)argv[2] == (string)"0") {
 							if (cnf->log_level >= 2)
 								gen->write_to_log("main.cpp", "Query: " + (string)argv[3], logfile);
-							myns = new mysql_noselect(conn, (string)argv[3]);
+							myns = new mysql_noselect(conn, (string)argv[3], logfile, cnf->log_level);
 							string ret = myns->execute();
 							printf("%s\n", ret.c_str());
 						} else {
