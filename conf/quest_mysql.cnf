@@ -2,3 +2,6 @@ DB_HOST=localhost
 DB_USER=quest_mysql
 DB_PASSWORD=123456
 DB_PORT=3306
+
+LOGGING_LEVEL=0
+LOG_FILE=/home/dev/Projects/Quest-MySQL/quest_mysql.log

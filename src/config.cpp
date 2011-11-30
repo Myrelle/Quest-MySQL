@@ -27,15 +27,20 @@ int config::readconfig() {
 			try {
 				splitted = this->split(line, "=");
 				if(splitted.size() < 2) {
-				}
-				if (splitted[0] == "DB_HOST") {
-					this->db_host = splitted[1];
-				} else if (splitted[0] == "DB_USER") {
-					this->db_user = splitted[1];
-				} else if (splitted[0] == "DB_PASSWORD") {
-					this->db_password = splitted[1];
-				} else if (splitted[0] == "DB_PORT") {
-					this->db_port = atoi(splitted[1].c_str());
+				} else {
+					if (splitted[0] == "DB_HOST") {
+						this->db_host = splitted[1];
+					} else if (splitted[0] == "DB_USER") {
+						this->db_user = splitted[1];
+					} else if (splitted[0] == "DB_PASSWORD") {
+						this->db_password = splitted[1];
+					} else if (splitted[0] == "DB_PORT") {
+						this->db_port = atoi(splitted[1].c_str());
+					} else if (splitted[0] == "LOGGING_LEVEL") {
+						this->log_level = splitted[1];
+					} else if (splitted[0] == "LOG_FILE") {
+						this->log_file = splitted[1];
+					}
 				}
 			} catch (exception& e) {
 				fprintf(stderr, "return {\"ERROR\", \"%s\"}\n", (char*)e.what());
