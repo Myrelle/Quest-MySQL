@@ -2,13 +2,17 @@
 #include <mysql/mysql.h>
 #include <vector>
 #include <exception>
+#include <stdio.h>
+#include "general.h"
 #include "mysql_select.h"
 
 using namespace std;
 
-mysql_select::mysql_select(MYSQL conn, string query) {
+mysql_select::mysql_select(MYSQL conn, string query, FILE * logfile, int loglevel) {
 	this->conn = conn;
 	this->query = query.c_str();
+	this->log_file = logfile;
+	this->log_level = loglevel;
 }
 
 string mysql_select::execute() {
@@ -29,6 +33,8 @@ string mysql_select::execute() {
 			rows = mysql_num_rows(result);
 			
 			if (rows == 0) {
+				if (this->log_level >= 3)
+					this->write_to_log("mysql_select.cpp", "Query-Result is empty", this->log_file);
 				return "return {\"ERROR\", \"Query-Result is empty\"}";
 			} else {
 				nr = 0;
@@ -46,12 +52,18 @@ string mysql_select::execute() {
 						output.append(", ");
 				}
 				output.append("}");
+				if (this->log_level >= 3)
+					this->write_to_log("mysql_select.cpp", "Query returns: " + output, this->log_file);
 				return output;
 			}
 		} catch (exception& e) {
+			if (this->log_level >= 1)
+				this->write_to_log("mysql_select.cpp", "Error: " + (string)e.what(), this->log_file);
 			return "return {\"ERROR\", \"" + (string)e.what() + "\"}";
 		}
 	} else {
+		if (this->log_level >= 1)
+			this->write_to_log("mysql_select.cpp", "Error: " + (string)mysql_error(&this->conn), this->log_file);
 		return "return {\"ERROR\", \"" + (string)mysql_error(&this->conn) + "\"}";
 	}
 }

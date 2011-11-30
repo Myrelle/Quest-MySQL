@@ -35,26 +35,36 @@ int main(int argc, char** argv) {
 			
 			if (!mysql_real_connect(&conn, cnf->db_host.c_str(), cnf->db_user.c_str(), cnf->db_password.c_str(), NULL, cnf->db_port, NULL, 0)) {
 				if (cnf->log_level >= 1)
-					gen->write_to_log("main.cpp", "Konnte keine Verbindung zum Server aufbauen" + (string)mysql_error(&conn), logfile);
+					gen->write_to_log("main.cpp", "Konnte keine Verbindung zum Server aufbauen: " + (string)mysql_error(&conn), logfile);
 				printf("return {\"ERROR\", \"Konnte keine Verbindung zum Server aufbauen: %s\"}\n", mysql_error(&conn));
 			} else {
 				if (argc >= 3) {
 					if (argc >= 4) {
 						if ((string)argv[2] == (string)"1") {
-							mys = new mysql_select(conn, (string)argv[3]);
+							if (cnf->log_level >= 2)
+								gen->write_to_log("main.cpp", "Select-Query: " + (string)argv[3], logfile);
+							mys = new mysql_select(conn, (string)argv[3], logfile, cnf->log_level);
 							string ret = mys->execute();
 							printf("%s\n", ret.c_str());						
 						} else if ((string)argv[2] == (string)"0") {
+							if (cnf->log_level >= 2)
+								gen->write_to_log("main.cpp", "Query: " + (string)argv[3], logfile);
 							myns = new mysql_noselect(conn, (string)argv[3]);
 							string ret = myns->execute();
 							printf("%s\n", ret.c_str());
 						} else {
+							if (cnf->log_level >= 2)
+								gen->write_to_log("main.cpp", "False Query-Type", logfile);
 							printf("return {\"ERROR\", \"False Query-Type\"}\n");
 						}
 					} else {
+						if (cnf->log_level >= 2)
+							gen->write_to_log("main.cpp", "Query is undefined", logfile);
 						printf("return {\"ERROR\", \"Query is undefined\"}\n");
 					}
 				} else {
+					if (cnf->log_level >= 2)
+						gen->write_to_log("main.cpp", "False Query-Type", logfile);
 					printf("return {\"ERROR\", \"False Query-Type\"}\n");
 				}
 			}
