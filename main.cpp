@@ -47,9 +47,9 @@ int main(int argc, char** argv) {
 						gen->write_to_log("main.cpp", "False Query-Type", logfile);
 					printf("return {\"ERROR\", \"False Query-Type\"}\n");
 				}
+				mysql_close(&conn);
 			}
 			
-			mysql_close(&conn);
 			delete cnf;
 			fclose(logfile);
 		}
