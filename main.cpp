@@ -4,8 +4,7 @@
 #include <mysql/mysql.h>
 #include "src/general.h"
 #include "src/config.h"
-#include "src/mysql_noselect.h"
-#include "src/mysql_select.h"
+#include "src/query.h"
 #include "src/help.h"
 
 using namespace std;
@@ -13,8 +12,7 @@ using namespace std;
 int main(int argc, char** argv) {
 	config *cnf;
 	general *gen;
-	mysql_noselect *myns;
-	mysql_select *mys;
+	query *myq;
 	MYSQL conn;
 	FILE *logfile;
 	
@@ -39,29 +37,11 @@ int main(int argc, char** argv) {
 				printf("return {\"ERROR\", \"Konnte keine Verbindung zum Server aufbauen: %s\"}\n", mysql_error(&conn));
 			} else {
 				if (argc >= 3) {
-					if (argc >= 4) {
-						if ((string)argv[2] == (string)"1") {
-							if (cnf->log_level >= 2)
-								gen->write_to_log("main.cpp", "Select-Query: " + (string)argv[3], logfile);
-							mys = new mysql_select(conn, (string)argv[3], logfile, cnf->log_level);
-							string ret = mys->execute();
-							printf("%s\n", ret.c_str());						
-						} else if ((string)argv[2] == (string)"0") {
-							if (cnf->log_level >= 2)
-								gen->write_to_log("main.cpp", "Query: " + (string)argv[3], logfile);
-							myns = new mysql_noselect(conn, (string)argv[3], logfile, cnf->log_level);
-							string ret = myns->execute();
-							printf("%s\n", ret.c_str());
-						} else {
-							if (cnf->log_level >= 2)
-								gen->write_to_log("main.cpp", "False Query-Type", logfile);
-							printf("return {\"ERROR\", \"False Query-Type\"}\n");
-						}
-					} else {
-						if (cnf->log_level >= 2)
-							gen->write_to_log("main.cpp", "Query is undefined", logfile);
-						printf("return {\"ERROR\", \"Query is undefined\"}\n");
-					}
+					if (cnf->log_level >= 2)
+						gen->write_to_log("main.cpp", "Query: " + (string)argv[2], logfile);
+					myq = new query(conn, (string)argv[2], logfile, cnf->log_level);
+					string ret = myq->execute();
+					printf("%s\n", ret.c_str());
 				} else {
 					if (cnf->log_level >= 2)
 						gen->write_to_log("main.cpp", "False Query-Type", logfile);
