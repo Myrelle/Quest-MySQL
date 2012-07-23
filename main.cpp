@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
 	
 	if (argc >= 2) {
 		if ((string)argv[1] == "--version") {
-			printf("Quest-MySQL by Hanashi\nVersion 1.1\n");
+			printf("Quest-MySQL by Hanashi\nVersion 1.1.1\n");
 		} else if ((string)argv[1] == "--help") {
 			help *h = new help();
 			string he = h->out();
